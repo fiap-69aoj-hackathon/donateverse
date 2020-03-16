@@ -7,3 +7,6 @@
 [submodule "donateverse-gateway"]
 	path = donateverse-gateway
 	url = https://github.com/fiap-69aoj-hackathon/donateverse-gateway.git
+[submodule "donateverse-web"]
+	path = donateverse-web
+	url = https://github.com/fiap-69aoj-hackathon/donateverse-web.git
