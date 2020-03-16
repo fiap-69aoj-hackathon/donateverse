@@ -1,0 +1,9 @@
+[submodule "donateverse-user"]
+	path = donateverse-user
+	url = https://github.com/fiap-69aoj-hackathon/donateverse-user.git
+[submodule "donateverse-discovery-server"]
+	path = donateverse-discovery-server
+	url = https://github.com/fiap-69aoj-hackathon/donateverse-discovery-server.git
+[submodule "donateverse-gateway"]
+	path = donateverse-gateway
+	url = https://github.com/fiap-69aoj-hackathon/donateverse-gateway.git
