@@ -1,0 +1,106 @@
+version: '3'
+
+services:
+
+  netflix-mysql:
+    container_name: netflix-mysql
+    build:
+      context: ./mysql/
+      dockerfile: ./Dockerfile
+    ports:
+      - "3306:3306"
+    networks:
+      - netflix-custom-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+
+  netflix-prometheus:
+    container_name: netflix-prometheus
+    image: prom/prometheus:latest
+    ports:
+    - 9090:9090
+    command:
+    - --config.file=/etc/prometheus/prometheus.yml
+    volumes:
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+    - netflix-catalog
+    - netflix-user
+    - netflix-order
+    - netflix-help-desk
+    - netflix-gateway
+
+  netflix-zipkin:
+    container_name: netflix-zipkin
+    image: openzipkin/zipkin
+    ports:
+      - "9411:9411"
+    networks:
+      - netflix-custom-network
+
+  netflix-discovery-server:
+    container_name: netflix-discovery-server
+    build: 
+      context: ./netflix-discovery-server/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - netflix-custom-network
+
+  netflix-catalog:
+    container_name: netflix-catalog
+    build: 
+      context: ./netflix-catalog/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - netflix-custom-network
+    depends_on:
+      - netflix-discovery-server
+      - netflix-mysql
+
+  netflix-user:
+    container_name: netflix-user
+    build: 
+      context: ./netflix-user/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8082:8082"
+    networks:
+      - netflix-custom-network
+    depends_on:
+      - netflix-discovery-server
+
+  netflix-order:
+    container_name: netflix-order
+    build: 
+      context: ./netflix-order/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8083:8083"
+    networks:
+      - netflix-custom-network
+    depends_on:
+      - netflix-discovery-server
+
+  netflix-gateway:
+    container_name: netflix-gateway
+    build: 
+      context: ./netflix-gateway/
+      dockerfile: ./Dockerfile
+    ports:
+      - "9091:9091"
+    networks:
+      - netflix-custom-network
+    depends_on:
+      - netflix-discovery-server
+      - netflix-catalog
+      - netflix-help-desk
+      - netflix-user
+      - netflix-order
+
+networks:
+  netflix-custom-network:
+    driver: bridge
