@@ -2,20 +2,20 @@ version: '3'
 
 services:
 
-  netflix-mysql:
-    container_name: netflix-mysql
+  donateverse-mysql:
+    container_name: donateverse-mysql
     build:
       context: ./mysql/
       dockerfile: ./Dockerfile
     ports:
       - "3306:3306"
     networks:
-      - netflix-custom-network
+      - custom-network
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
-  netflix-prometheus:
-    container_name: netflix-prometheus
+  donateverse-prometheus:
+    container_name: donateverse-prometheus
     image: prom/prometheus:latest
     ports:
     - 9090:9090
@@ -24,83 +24,69 @@ services:
     volumes:
     - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     depends_on:
-    - netflix-catalog
-    - netflix-user
-    - netflix-order
-    - netflix-help-desk
-    - netflix-gateway
+    - donateverse-user
+    - donateverse-transaction
+    - donateverse-gateway
 
-  netflix-zipkin:
-    container_name: netflix-zipkin
+  donateverse-zipkin:
+    container_name: donateverse-zipkin
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
     networks:
-      - netflix-custom-network
+      - custom-network
 
-  netflix-discovery-server:
-    container_name: netflix-discovery-server
+  donateverse-discovery-server:
+    container_name: donateverse-discovery-server
     build: 
-      context: ./netflix-discovery-server/
+      context: ./donateverse-discovery-server/
       dockerfile: ./Dockerfile
     ports:
       - "8761:8761"
     networks:
-      - netflix-custom-network
+      - custom-network
 
-  netflix-catalog:
-    container_name: netflix-catalog
+  donateverse-user:
+    container_name: donateverse-user
     build: 
-      context: ./netflix-catalog/
+      context: ./donateverse-user/
       dockerfile: ./Dockerfile
     ports:
       - "8080:8080"
     networks:
-      - netflix-custom-network
+      - custom-network
     depends_on:
-      - netflix-discovery-server
-      - netflix-mysql
+      - donateverse-discovery-server
+      - donateverse-mysql
+      - donateverse-zipkin
 
-  netflix-user:
-    container_name: netflix-user
+  donateverse-transaction:
+    container_name: donateverse-transaction
     build: 
-      context: ./netflix-user/
+      context: ./donateverse-transaction/
       dockerfile: ./Dockerfile
     ports:
-      - "8082:8082"
+      - "8081:8081"
     networks:
-      - netflix-custom-network
+      - custom-network
     depends_on:
-      - netflix-discovery-server
+      - donateverse-discovery-server
+      - donateverse-mysql
+      - donateverse-zipkin
 
-  netflix-order:
-    container_name: netflix-order
+  donateverse-gateway:
+    container_name: donateverse-gateway
     build: 
-      context: ./netflix-order/
-      dockerfile: ./Dockerfile
-    ports:
-      - "8083:8083"
-    networks:
-      - netflix-custom-network
-    depends_on:
-      - netflix-discovery-server
-
-  netflix-gateway:
-    container_name: netflix-gateway
-    build: 
-      context: ./netflix-gateway/
+      context: ./donateverse-gateway/
       dockerfile: ./Dockerfile
     ports:
       - "9091:9091"
     networks:
-      - netflix-custom-network
+      - custom-network
     depends_on:
-      - netflix-discovery-server
-      - netflix-catalog
-      - netflix-help-desk
-      - netflix-user
-      - netflix-order
+      - donateverse-user
+      - donateverse-transaction
 
 networks:
-  netflix-custom-network:
+  custom-network:
     driver: bridge

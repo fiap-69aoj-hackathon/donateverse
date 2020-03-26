@@ -12,6 +12,8 @@ donateverse-discovery-server:8761
 donateverse-gateway:9091
 
 donateverse-user:8080
+donateverse-transaction:8081
+donateverse-center:3012
 
 ```
 

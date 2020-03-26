@@ -10,3 +10,9 @@
 [submodule "donateverse-web"]
 	path = donateverse-web
 	url = https://github.com/fiap-69aoj-hackathon/donateverse-web.git
+[submodule "donateverse-center"]
+	path = donateverse-center
+	url = https://github.com/fiap-69aoj-hackathon/donateverse-center.git
+[submodule "donateverse-transaction"]
+	path = donateverse-transaction
+	url = https://github.com/fiap-69aoj-hackathon/donateverse-transaction.git
