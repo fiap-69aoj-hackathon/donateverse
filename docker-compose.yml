@@ -87,6 +87,16 @@ services:
       - donateverse-user
       - donateverse-transaction
 
+  donateverse-center:
+    container_name: donateverse-center
+    build: 
+      context: ./donateverse-center/
+      dockerfile: ./Dockerfile
+    ports:
+      - "3012:3012"
+    networks:
+      - custom-network
+
 networks:
   custom-network:
     driver: bridge
